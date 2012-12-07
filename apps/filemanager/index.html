@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <title>File Manager</title>
+
+    <style>
+    </style>
+
+    <script>
+        try {
+            alert(navigator.mozSDCard.name);
+            // alert(navigator.mozSDCard.root);
+            // alert(navigator.mozSDCard.root.fullPath);
+            alert("DirectoryReader"+navigator.mozDirectoryReader);
+            alert("DirectoryEntry="+navigator.mozDirectoryEntry);
+            alert("fullPath="+navigator.mozDirectoryEntry.fullPath);
+            // alert(navigator.mozSDCard.root);
+            // alert(navigator.mozSDCard.root.fullPath);
+        } catch (ex) {
+            alert(ex);
+        }
+    </script>
+  </head>
+
+  <body>
+
+    <p>Implement me</p>
+
+  </body>
+
+</html>

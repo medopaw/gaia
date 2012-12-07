@@ -1,0 +1,59 @@
+{
+  "name": "FileManager",
+  "description": "Manage SD card files and directories",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "Med0paW",
+    "url": "https://github.com/medopaw"
+  },
+  "locales": {
+    "ar": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "de": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "el": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "en-US": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "es": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "fr": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "it": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "pt-BR": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "ru": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "tr": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    },
+    "zh-TW": {
+      "name": "FileManager",
+      "description": "Manage SD card files and directories"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "128": "/style/icons/Blank.png"
+  }
+}
