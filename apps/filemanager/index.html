@@ -7,27 +7,21 @@
     <title>File Manager</title>
 
     <style>
+        #count {
+            text-align: right;
+        }
     </style>
 
-    <script>
-        try {
-            alert(navigator.mozSDCard.name);
-            // alert(navigator.mozSDCard.root);
-            // alert(navigator.mozSDCard.root.fullPath);
-            alert("DirectoryReader"+navigator.mozDirectoryReader);
-            alert("DirectoryEntry="+navigator.mozDirectoryEntry);
-            alert("fullPath="+navigator.mozDirectoryEntry.fullPath);
-            // alert(navigator.mozSDCard.root);
-            // alert(navigator.mozSDCard.root.fullPath);
-        } catch (ex) {
-            alert(ex);
-        }
-    </script>
-  </head>
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="js/filemanager.js"></script>
+
+ </head>
 
   <body>
 
-    <p>Implement me</p>
+    <dir id="header"><div id="path"></div><div id="count"></div></div>
+    <hr/>
+    <div id="main"></div>
 
   </body>
 
