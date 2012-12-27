@@ -31,3 +31,11 @@ window.addEventListener("deviceorientation", function (e) {
 window.addEventListener("compassneedscalibration", function (e) {
   document.getElementById("compassneedscalibration").innerHTML = "true";
 }, false);
+
+window.addEventListener("devicemagneticfield", function (e) {
+  if (e) {
+    document.getElementById("magnetic-field-x").innerHTML = e.x
+    document.getElementById("magnetic-field-y").innerHTML = e.y
+    document.getElementById("magnetic-field-z").innerHTML = e.z
+  }
+}, false);
