@@ -76,7 +76,7 @@ settings = {
  "ril.iccInfo.mbdn":"",
  "ril.sms.strict7BitEncoding.enabled": False,
  "ril.cellbroadcast.searchlist": "",
- "debug.console.enabled": False,
+ "debug.console.enabled": True,
  "phone.ring.keypad": True,
  "powersave.enabled": False,
  "powersave.threshold": -1,

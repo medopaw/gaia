@@ -1,99 +1,43 @@
-'use strict';
+// Sets the require.js configuration for your application.
+require.config({
 
-try {
-    var sdcard = navigator.mozSDCard;
-    // alert(sdcard.name);
-    var root = sdcard.root;
-    // alert(root.fullPath);
-    var home = null;
+      // 3rd party script alias names (Easier to type "jquery" than "libs/jquery-1.8.2.min")
+      paths: {
+            // Core Libraries
+            "utils": "libs/utils",
+            "jquery": "libs/jquery",
+            "jquerymobile": "libs/jquerymobile",
+            "underscore": "libs/lodash",
+            "backbone": "libs/backbone"
+      },
 
-    var errorHandler = function(e) {
-        var msg = 'whatever';
-        alert('Error: ' + msg);
-    };
-    var displayDir = function displayDir(dir) {
-        // alert(dir.fullPath);
-        // alert($('#path').text());
-        $('#path').text(dir.fullPath);
-        dir.createReader().readEntries(function(results) {
-           $('#count').text(results.length + (results.length > 1 ? ' entries' : ' entry'));
-           var $up = $('<div><a href="">..</a></div>');
-           $up.find('a').click(function(e) {
-               e.preventDefault();
-               dir.getParent(function(result) {
-                   displayDir(result);
-               }, errorHandler);
-           });
-           $('#main').empty().append($up);
-           for (var i = 0; i < results.length; i++) {
-               var result = results.item(i);
-               var $div = $('<div/>').data('entry', result);
-               if (result.name == 'ThisIsACopyTest.txt') {
-                   result.copyTo(home, 'test.copy.txt');
-                   // var testtxt = result;
-                   // alert(testtxt.name);
-                   // testtxt.getParent(function(parentDir) {
-                      // testtxt.copyTo(parentDir, 'test.copy.txt');
-                   // });
-               }
-               if (result.isDirectory) {
-                   $div.append($('<a/>').attr('href', '').text('[' + result.name + ']').click(function(e) {
-                       e.preventDefault();
-                       var entry = $(this).closest('div').data('entry');
-                       if (entry.name == 'ray') {
-                           home = entry;
-                       }
-                       displayDir(entry);
-                   }));
-               } else {
-                   $div.text(result.name);
-               }
-               $div.appendTo($('#main'));
-           }
-       }, errorHandler);
-    }
+      // Sets the configuration for your third party scripts that are not AMD compatible
+      shim: {
 
-$(function() {
-    displayDir(root);
-});
-
-/*
-    root.getParent(function(entry) {
-        // alert('parent='+entry.fullPath);
-    }, function(err) {
-        alert(err.name);
-    });
-    alert(root);
-    alert(root.fullPath);
-    alert(root.isDirectory);
-    alert(root.filesystem); 
-    var reader = root.createReader();
-    alert(reader);
-    // alert(reader.readEntries());
-    reader.readEntries(function(entries) {
-        alert(entries);
-        var s = '', entry;
-        alert(entries.length);
-        for (var i = 0; i < entries.length; i++) {
-            entry = entries.item(i);// entry = entries[i];
-            if (entry.isDirectory) {
-                s += '[' + entry.name + ']<br>';
-            } else {
-                s += entry.name + '<br>';
+            "backbone": {
+                  "deps": [ "underscore", "jquery" ],
+                  "exports": "Backbone"  //attaches "Backbone" to the window object
             }
-        }
-        alert(s);
-        document.body.innerHTML = s;
-    }, function(x) {
-        alert(x);
-        alert(x.name);
-    });
-    // alert("DirectoryReader"+navigator.mozDirectoryReader);
-    // alert("DirectoryEntry="+navigator.mozDirectoryEntry);
-    // alert("fullPath="+navigator.mozDirectoryEntry.fullPath);
-    // alert(navigator.mozSDCard.root);
-    // alert(navigator.mozSDCard.root.fullPath);
-    */
-} catch (ex) {
-    alert(ex);
-}
+
+      } // end Shim Configuration
+
+});
+// Includes File Dependencies
+require(["jquery", "backbone", "routers/mobileRouter"], function($, Backbone, MobileRouter) {
+
+	$(document).on("mobileinit",
+		// Set up the "mobileinit" handler before requiring jQuery Mobile's module
+		function() {
+			// Prevents all anchor click handling including the addition of active button state and alternate link bluring.
+			$.mobile.linkBindingEnabled = false;
+
+			// Disabling this will prevent jQuery Mobile from handling hash changes
+			$.mobile.hashListeningEnabled = false;
+		}
+	);
+
+	require( ["jquerymobile"], function() {
+		// Instantiates a new Backbone.js Mobile Router
+		this.router = new MobileRouter();
+	});
+});

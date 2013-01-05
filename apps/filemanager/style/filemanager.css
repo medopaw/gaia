@@ -1,0 +1,14 @@
+#up-button {
+    width: 28px;
+}
+
+img {
+    width: 32px;
+}
+
+#header {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+    font-size: 1.5rem;
+}
