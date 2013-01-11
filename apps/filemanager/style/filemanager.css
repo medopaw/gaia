@@ -12,11 +12,14 @@
     margin-right: 2px;
 }
 
-#header {
-    height: 40px;
+#entries p {
+    margin-top: 10px;
+}
+
+#entries p span {
+    float: right;
 }
 
 #footer {
     display: none;
-    text-align: center;
 }
