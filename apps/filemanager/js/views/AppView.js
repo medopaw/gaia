@@ -90,11 +90,13 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                 console.log(clipboard.action);
                 switch (clipboard.action) {
                     case "Copy": {
-                        clipboard[i].copyTo(parentDirEntry, "", successHandler, Utils.errorHandler);
+                        // clipboard[i].copyTo(parentDirEntry, "", successHandler, Utils.errorHandler);
+                        clipboard[i].copyTo(parentDirEntry, clipboard[i].name, successHandler, Utils.errorHandler);
                         break;
                     }
                     case "Move": {
-                        clipboard[i].moveTo(parentDirEntry, "", successHandler, Utils.errorHandler);
+                        // clipboard[i].moveTo(parentDirEntry, "", successHandler, Utils.errorHandler);
+                        clipboard[i].moveTo(parentDirEntry, clipboard[i].name, successHandler, Utils.errorHandler);
                         break;
                     }
                     default: {

@@ -19,9 +19,8 @@ define([], function() {
             return size + units[i];
         },
 
-        errorHandler: function() {
-           var msg = 'whatever';
-           alert('Error: ' + msg);
+        errorHandler: function(e) {
+           alert('Error: ' + e.name);
         },
 
         switchTheme: function($el, x, y) {
