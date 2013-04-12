@@ -160,7 +160,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             dirEntry.createReader().readEntries(function(results) {
                 var entries = [];
                 for (var i = 0; i < results.length; i++) {
-                    entries.push(results.item(i));
+                    entries.push(results[i]);
                 }
                 that.entriesView.collection.setEntries(entries);
             }, Utils.errorHandler);
