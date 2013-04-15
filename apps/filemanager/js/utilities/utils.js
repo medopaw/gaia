@@ -20,7 +20,11 @@ define([], function() {
         },
 
         errorHandler: function(e) {
-           alert('Error: ' + e.name);
+            if (e) {
+                alert('Error: ' + e.name);
+            } else {
+                alert('Bug occurs! DOMError is null.');
+            }
         },
 
         switchTheme: function($el, x, y) {

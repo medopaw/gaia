@@ -19,6 +19,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             "tap #cut-button": "onTapCutButton",
             "tap #paste-button": "onTapPasteButton",
             "tap #delete-button": "onTapDeleteButton",
+            "tap #rename-button": "onTapRenameButton",
             "taphold": "onTaphold"
         },
 
@@ -82,8 +83,12 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             var successHandler = function(result) {
                 // current dir may have changed
                 if (that.model.get("dirEntry").fullPath == parentDirEntry.fullPath) {
+                    /*
                     var entryModel = new EntryModel({entry: result});
                     entriesCollection.add(entryModel);
+                    */
+                    // simply refresh all entries
+                    this.setupPage();
                 }
             };
             for (var i = 0; i < clipboard.length; i++) {
@@ -132,6 +137,30 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                }
            }, this);
            this.model.set("mode", "Browse");
+        },
+
+        onTapRenameButton: function() {
+            var newName = prompt("New name:");
+            if (newName) {
+                var parentDirEntry = this.model.get("dirEntry");
+                console.log(parentDirEntry.fullPath);
+                var entry = null;
+                this.entriesView.collection.each(function(entryModel) {
+                    if (!entry && entryModel.get("selected")) {
+                        console.log(entryModel.get("entry").fullPath);
+                        entry = entryModel.get("entry");
+                    }
+                });
+                if (entry) {
+                    var that = this;
+                    entry.moveTo(parentDirEntry, newName, function(result) {
+                        console.log(result.fullPath);
+                        // simply refresh all entries
+                        that.setupPage();
+                        that.model.set("mode", "Browse");
+                    }, Utils.errorHandler);
+                }
+            }
         },
 
         onTaphold: function(e) {
