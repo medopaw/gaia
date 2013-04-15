@@ -122,14 +122,13 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                that.refreshPageOnNeed(curPath);
            };
 
-           entriesCollection.each(function(entryModel) {
-               if (entryModel.get("selected")) {
-                   var entry = entryModel.get("entry");
-                   if (entry.isFile) {
-                       entry.remove(successHandler, Utils.errorHandler);
-                   } else {
-                       entry.removeRecursively(successHandler, Utils.errorHandler);
-                   }
+           var selected = Utils.getSelected(this.entriesView.collection);
+           selected.each(function(entryModel) {
+               var entry = entryModel.get("entry");
+               if (entry.isFile) {
+                   entry.remove(successHandler, Utils.errorHandler);
+               } else {
+                   entry.removeRecursively(successHandler, Utils.errorHandler);
                }
            }, this);
            this.model.set("mode", "Browse");
@@ -141,19 +140,17 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                 var parentDirEntry = this.model.get("dirEntry");
                 console.log(parentDirEntry.fullPath);
                 var entry = null;
-                this.entriesView.collection.each(function(entryModel) {
-                    if (!entry && entryModel.get("selected")) {
-                        console.log(entryModel.get("entry").fullPath);
-                        entry = entryModel.get("entry");
-                    }
-                });
-                if (entry) {
+                var selected = Utils.getSelected(this.entriesView.collection);
+                if (selected.length == 1) {
+                    var entry = selected[0];
                     var that = this;
                     entry.moveTo(parentDirEntry, name, function(result) {
                         console.log(result.fullPath);
                         // simply refresh all entries
                         that.refreshPageOnNeed(parentDirEntry.fullPath);
                     }, Utils.errorHandler);
+                } else { // shouldn't come to this branch
+                    alert("You can only rename one entry.");
                 }
             }
             this.model.set("mode", "Browse");
@@ -197,6 +194,43 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             }
         },
 
+        onSelectionChanged: function() {
+            console.log('Selection changes.');
+            var selected = Utils.getSelected(this.entriesView.collection);
+            console.log(selected.length + " entry/entries selected.");
+            var footer = this.$el.find("#footer");
+            var $buttons = {};
+            footer.find('a[data-role="button"]').each(function() {
+                $this = $(this);
+                $buttons[$this.attr('id').replace(/-button$/, '')] = $this;
+            });
+            // for (var i in $buttons) console.log(i+':'+$buttons[i]);
+            // in $.each, this is the value
+            var enableButtons = function(names) {
+                $.each(names, function(name) {
+                    $buttons[this].removeClass('ui-disabled');
+                });
+            }, disableButtons = function(names) {
+                $.each(names, function(name) {
+                    $buttons[this].addClass('ui-disabled');
+                });
+            };
+            switch (selected.length) {
+                case 0: {
+                    disableButtons(['copy', 'cut', 'delete', 'rename']);
+                    break;
+                }
+                case 1: {
+                    enableButtons(['copy', 'cut', 'delete', 'rename']);
+                    break;
+                }
+                default: {
+                    disableButtons(['rename']);
+                    break;
+                }
+            }
+        },
+
         setupPage: function() {
             console.log("In setupPage()");
             var dirEntry = this.model.get("dirEntry");
@@ -227,6 +261,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             switch (this.model.get("mode")) {
                 case "Edit": {
                     this.$el.find("#footer").slideToggle();
+                    this.onSelectionChanged();
                     break;
                 }
                 case "Browse": {

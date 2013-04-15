@@ -44,13 +44,18 @@ define([], function() {
            }
         },
 
-        refreshClipboard: function(collection) {
-           this.clipboard = [];
+        getSelected: function(collection) {
+           var selected = [];
            collection.each(function(entryModel) {
                if (entryModel.get("selected")) {
-                   this.clipboard.push(entryModel.get("entry"));
+                   selected.push(entryModel.get("entry"));
                }
-           }, this);
+           });
+           return selected;
+        },
+
+        refreshClipboard: function(collection) {
+           this.clipboard = this.getSelected();
         }
 
     };

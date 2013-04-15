@@ -41,11 +41,13 @@ define(["jquery", "backbone", "utils", "models/EntryModel"], function($, Backbon
        initialize: function(options) {
             console.log("Init EntryView");
             this.owner = options.owner;
+            var appView = this.owner.owner;
             this.model.on("change:entry", this.render, this);
             var that = this; // weird. can't use this.remove directly
             this.model.on("remove", function() {
                 that.remove();
             });
+            this.model.on("change:selected", appView.onSelectionChanged, appView); // we must set this right
             this.model.view = this;
         },
 

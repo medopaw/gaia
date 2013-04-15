@@ -2,6 +2,7 @@
 // ==============
 
 define(["jquery", "backbone"], function($, Backbone) {
+
     var EntryModel = Backbone.Model.extend({
         initialize: function() {
             console.log("Init EntryModel");
@@ -10,4 +11,5 @@ define(["jquery", "backbone"], function($, Backbone) {
     });
 
     return EntryModel;
+
 });
