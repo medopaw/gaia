@@ -50,6 +50,20 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             return this;
         },
 
+        enableButtons: function(names) {
+            var that = this;
+            $.each(names, function() {
+                that.$el.find("#footer #%0-button".format(this)).removeClass("ui-disabled");
+            });
+        },
+
+        disableButtons: function(names) {
+            var that = this;
+            $.each(names, function() {
+                that.$el.find("#footer #%0-button".format(this)).addClass("ui-disabled");
+            });
+        },
+
         onTapUpButton: function() {
             console.log("In goUpDir()");
             if (this.model.get("mode") == "Edit") {
@@ -66,14 +80,21 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         onTapCopyButton: function() {
+            console.log(this.entriesView.collection);
             Utils.refreshClipboard(this.entriesView.collection);
             Utils.clipboard.action = "Copy";
+            if (Utils.clipboard.length) {
+                this.enableButtons(["paste"]);
+            }
             this.model.set("mode", "Browse");
         },
 
         onTapCutButton: function() {
             Utils.refreshClipboard(this.entriesView.collection);
             Utils.clipboard.action = "Move";
+            if (Utils.clipboard.length) {
+                this.enableButtons(["paste"]);
+            }
             this.model.set("mode", "Browse");
         },
 
@@ -110,6 +131,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             }
             clipboard = [];
             clipboard.action = null;
+            this.disableButtons(["paste"]);
             this.model.set("mode", "Browse");
         },
 
@@ -179,7 +201,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         onTaphold: function(e) {
-            console.log('Trigger taphold event');
+            console.log("Trigger taphold event");
             e.stopPropagation();
             switch (this.model.get("mode")) {
                 case "Edit": {
@@ -195,37 +217,21 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         onSelectionChanged: function() {
-            console.log('Selection changes.');
+            console.log("Selection changes.");
             var selected = Utils.getSelected(this.entriesView.collection);
             console.log(selected.length + " entry/entries selected.");
-            var footer = this.$el.find("#footer");
-            var $buttons = {};
-            footer.find('a[data-role="button"]').each(function() {
-                $this = $(this);
-                $buttons[$this.attr('id').replace(/-button$/, '')] = $this;
-            });
-            // for (var i in $buttons) console.log(i+':'+$buttons[i]);
-            // in $.each, this is the value
-            var enableButtons = function(names) {
-                $.each(names, function(name) {
-                    $buttons[this].removeClass('ui-disabled');
-                });
-            }, disableButtons = function(names) {
-                $.each(names, function(name) {
-                    $buttons[this].addClass('ui-disabled');
-                });
-            };
-            switch (selected.length) {
+           // in $.each, this is the value
+           switch (selected.length) {
                 case 0: {
-                    disableButtons(['copy', 'cut', 'delete', 'rename']);
+                    this.disableButtons(["copy", "cut", "delete", "rename"]);
                     break;
                 }
                 case 1: {
-                    enableButtons(['copy', 'cut', 'delete', 'rename']);
+                    this.enableButtons(["copy", "cut", "delete", "rename"]);
                     break;
                 }
                 default: {
-                    disableButtons(['rename']);
+                    this.disableButtons(["rename"]);
                     break;
                 }
             }
@@ -262,6 +268,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                 case "Edit": {
                     this.$el.find("#footer").slideToggle();
                     this.onSelectionChanged();
+                    Utils.clipboard.length ? this.enableButtons(["paste"]) : this.disableButtons(["paste"]);
                     break;
                 }
                 case "Browse": {

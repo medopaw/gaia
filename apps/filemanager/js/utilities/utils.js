@@ -5,6 +5,8 @@ define([], function() {
 
    var Utils = {
 
+        clipboard: [],
+
         prettifySize: function(bytes) {
             if(!bytes || (isNaN(bytes) && isNaN(parseFloat(bytes)))) {
                 return "0Bytes";
@@ -21,9 +23,9 @@ define([], function() {
 
         errorHandler: function(e) {
             if (e) {
-                alert('Error: ' + e.name);
+                alert("Error: " + e.name);
             } else {
-                alert('Bug occurs! DOMError is null.');
+                alert("Bug occurs! DOMError is null.");
             }
         },
 
@@ -55,7 +57,7 @@ define([], function() {
         },
 
         refreshClipboard: function(collection) {
-           this.clipboard = this.getSelected();
+           this.clipboard = this.getSelected(collection);
         }
 
     };
