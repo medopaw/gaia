@@ -20,6 +20,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             "tap #paste-button": "onTapPasteButton",
             "tap #delete-button": "onTapDeleteButton",
             "tap #rename-button": "onTapRenameButton",
+            "tap #create-button": "onTapCreateButton",
             "taphold": "onTaphold"
         },
 
@@ -82,14 +83,13 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             console.log("%0 entries in clipboard".format(clipboard.length));
             var successHandler = function(result) {
                 // current dir may have changed
+                that.refreshPageOnNeed(parentDirEntry.fullPath);
+                /*
                 if (that.model.get("dirEntry").fullPath == parentDirEntry.fullPath) {
-                    /*
                     var entryModel = new EntryModel({entry: result});
                     entriesCollection.add(entryModel);
-                    */
-                    // simply refresh all entries
-                    this.setupPage();
                 }
+                */
             };
             for (var i = 0; i < clipboard.length; i++) {
                 console.log(clipboard.action);
@@ -114,25 +114,21 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         onTapDeleteButton: function() {
-           // var trash = [];
            var entriesCollection = this.entriesView.collection;
+           var curPath = this.model.get("dirEntry").fullPath;
+           var that = this;
+           var successHandler = function() {
+               console.log("Entry removed.")
+               that.refreshPageOnNeed(curPath);
+           };
+
            entriesCollection.each(function(entryModel) {
                if (entryModel.get("selected")) {
                    var entry = entryModel.get("entry");
-                   if (entry.isDirectory) {
-                       entry.removeRecursively(function() {
-                           console.log("Dir removed");
-                           // entryModel.destroy();
-                           // trash.push(entryModel);
-                           entriesCollection.remove(entryModel);
-                       }, Utils.errorHandler);
+                   if (entry.isFile) {
+                       entry.remove(successHandler, Utils.errorHandler);
                    } else {
-                       entry.remove(function() {
-                           console.log("File removed");
-                           // entryModel.destroy();
-                           // trash.push(entryModel);
-                           entriesCollection.remove(entryModel);
-                       }, Utils.errorHandler);
+                       entry.removeRecursively(successHandler, Utils.errorHandler);
                    }
                }
            }, this);
@@ -140,8 +136,8 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         onTapRenameButton: function() {
-            var newName = prompt("New name:");
-            if (newName) {
+            var name = prompt("New name:");
+            if (name) {
                 var parentDirEntry = this.model.get("dirEntry");
                 console.log(parentDirEntry.fullPath);
                 var entry = null;
@@ -153,14 +149,36 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                 });
                 if (entry) {
                     var that = this;
-                    entry.moveTo(parentDirEntry, newName, function(result) {
+                    entry.moveTo(parentDirEntry, name, function(result) {
                         console.log(result.fullPath);
                         // simply refresh all entries
-                        that.setupPage();
-                        that.model.set("mode", "Browse");
+                        that.refreshPageOnNeed(parentDirEntry.fullPath);
                     }, Utils.errorHandler);
                 }
             }
+            this.model.set("mode", "Browse");
+        },
+
+        onTapCreateButton: function() {
+            var isFile = confirm("Create a file? (Click Cancel to create a directory)");
+            var name = prompt("Name:");
+            if (name) {
+                var parentDirEntry = this.model.get("dirEntry");
+                var options = {
+                    create: true,
+                    exclusive: true // return error if target file/directory exists
+                };
+                var that = this;
+                var successHandler = function(result) {
+                    that.refreshPageOnNeed(parentDirEntry.fullPath);
+                };
+                if (isFile) {
+                    parentDirEntry.getFile(name, options, successHandler, Utils.errorHandler);
+                } else {
+                    parentDirEntry.getDirectory(name, options, successHandler, Utils.errorHandler);
+                }
+            }
+            this.model.set("mode", "Browse");
         },
 
         onTaphold: function(e) {
@@ -195,6 +213,14 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
                 }
                 that.entriesView.collection.setEntries(entries);
             }, Utils.errorHandler);
+        },
+
+        refreshPageOnNeed: function(path) {
+            console.log("Original directory is " + path);
+            console.log("Current directory is " + this.model.get("dirEntry").fullPath);
+            if (path == this.model.get("dirEntry").fullPath) {
+                this.setupPage();
+            }
         },
 
         changeMode: function() {
