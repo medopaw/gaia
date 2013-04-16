@@ -52,6 +52,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
 
         enableButtons: function(names) {
             var that = this;
+            // in $.each, this is the value
             $.each(names, function() {
                 that.$el.find("#footer #%0-button".format(this)).removeClass("ui-disabled");
             });
@@ -145,14 +146,14 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
            };
 
            var selected = Utils.getSelected(this.entriesView.collection);
-           selected.each(function(entryModel) {
-               var entry = entryModel.get("entry");
+           $.each(selected, function() {
+               var entry = this.get("entry"); // this is EntryModel
                if (entry.isFile) {
                    entry.remove(successHandler, Utils.errorHandler);
                } else {
                    entry.removeRecursively(successHandler, Utils.errorHandler);
                }
-           }, this);
+           });
            this.model.set("mode", "Browse");
         },
 
@@ -220,8 +221,7 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
             console.log("Selection changes.");
             var selected = Utils.getSelected(this.entriesView.collection);
             console.log(selected.length + " entry/entries selected.");
-           // in $.each, this is the value
-           switch (selected.length) {
+            switch (selected.length) {
                 case 0: {
                     this.disableButtons(["copy", "cut", "delete", "rename"]);
                     break;

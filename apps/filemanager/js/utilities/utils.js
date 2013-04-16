@@ -47,13 +47,9 @@ define([], function() {
         },
 
         getSelected: function(collection) {
-           var selected = [];
-           collection.each(function(entryModel) {
-               if (entryModel.get("selected")) {
-                   selected.push(entryModel.get("entry"));
-               }
-           });
-           return selected;
+            return collection.filter(function(entryModel) {
+                return entryModel.get("selected");
+            });
         },
 
         refreshClipboard: function(collection) {
