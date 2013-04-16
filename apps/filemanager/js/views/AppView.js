@@ -51,18 +51,15 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
         },
 
         enableButtons: function(names) {
-            var that = this;
-            // in $.each, this is the value
-            $.each(names, function() {
-                that.$el.find("#footer #%0-button".format(this)).removeClass("ui-disabled");
-            });
+            _.each(names, function(name) {
+                this.$el.find("#footer #%0-button".format(name)).removeClass("ui-disabled");
+            }, this);
         },
 
         disableButtons: function(names) {
-            var that = this;
-            $.each(names, function() {
-                that.$el.find("#footer #%0-button".format(this)).addClass("ui-disabled");
-            });
+            _.each(names, function(name) {
+                this.$el.find("#footer #%0-button".format(name)).addClass("ui-disabled");
+            }, this);
         },
 
         onTapUpButton: function() {
@@ -146,12 +143,11 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
            };
 
            var selected = Utils.getSelected(this.entriesView.collection);
-           $.each(selected, function() {
-               // this is the FileSystem entry
-               if (this.isFile) {
-                   this.remove(successHandler, Utils.errorHandler);
+           _.each(selected, function(entry) {
+               if (entry.isFile) {
+                   entry.remove(successHandler, Utils.errorHandler);
                } else {
-                   this.removeRecursively(successHandler, Utils.errorHandler);
+                   entry.removeRecursively(successHandler, Utils.errorHandler);
                }
            });
            this.model.set("mode", "Browse");
