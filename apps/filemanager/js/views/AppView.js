@@ -147,11 +147,11 @@ define(["jquery", "backbone", "utils", "models/AppModel", "models/EntryModel", "
 
            var selected = Utils.getSelected(this.entriesView.collection);
            $.each(selected, function() {
-               var entry = this.get("entry"); // this is EntryModel
-               if (entry.isFile) {
-                   entry.remove(successHandler, Utils.errorHandler);
+               // this is the FileSystem entry
+               if (this.isFile) {
+                   this.remove(successHandler, Utils.errorHandler);
                } else {
-                   entry.removeRecursively(successHandler, Utils.errorHandler);
+                   this.removeRecursively(successHandler, Utils.errorHandler);
                }
            });
            this.model.set("mode", "Browse");

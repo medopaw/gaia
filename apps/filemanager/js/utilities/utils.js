@@ -47,8 +47,10 @@ define([], function() {
         },
 
         getSelected: function(collection) {
-            return collection.filter(function(entryModel) {
+            return _.map(collection.filter(function(entryModel) {
                 return entryModel.get("selected");
+            }), function(entryModel) {
+                return entryModel.get("entry");
             });
         },
 
