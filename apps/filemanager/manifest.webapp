@@ -6,6 +6,9 @@
     "name": "Med0paW",
     "url": "https://github.com/medopaw"
   },
+  "permissions": {
+    "sdcard-filesystem":{}
+  },
   "locales": {
     "ar": {
       "name": "FileManager",
